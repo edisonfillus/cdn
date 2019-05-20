@@ -1,0 +1,61 @@
+# Install vsftpd
+sudo apt-get install vsftpd
+
+
+# Configure vsftpd
+sudo nano /etc/vsftpd.conf
+>> local_enable=YES                         # Allow local users
+>> anonymous_enable=NO                      # Disable anonymous access
+>> chroot_local_user=YES                    # Block access to others paths, except home directory
+>> chroot_list_enable=NO                    # No exception for chroot
+>> write_enable=YES                         # Permit writes
+>> anon_upload_enable=YES		    # Allow users to upload files
+>> anon_mkdir_write_enable=YES		    # Allow users to create directories
+>> xferlog_file=/var/log/vsftpd.log         # Where logs go
+
+>> local_max_rate=0			    # If want to limit data transfer rate, in bytes per second
+
+>> userlist_enable=YES			    # Activate list of usernames to allow/deny
+>> userlist_deny=NO			    # YES (list to deny), NO (list to allow)
+>> userlist_file=/etc/vsftpd.userlist	    # List of usernames to allow/deny
+
+>> user_sub_token=$USER
+			    # Create a user token
+>> local_root=/home/$USER/ftp               # Set the ftp root directory (As root directory can't be writen, set another path to be ftp home)
+
+>> chmod_enable=YES			    # Change file permissions after upload
+>> file_open_mode=0666			    # Base permissions
+>> local_umask=0022			    # Change after upload
+
+
+# Add a group for ftpusers
+sudo groupadd ftpusers
+
+# Create a new user linked to ftpusers group
+sudo useradd --group ftpusers --home-dir /home/ftpuser --create-home ftpuser
+
+# Set password
+passwd ftpuser
+
+# If want to change home manually, set it here
+sudo nano /etc/passwd
+
+# If want to create a home folder manually
+cd /home
+sudo mkdir ftpuser
+sudo chown ftpuser:ftpusers ftpuser
+
+# Remove ownership and permissions of ftp root directory
+sudo chown nobody:nogroup /home/ftpuser/ftp
+sudo chmod a-w /home/ftpuser/ftp
+
+# Create the directory for file uploads
+sudo mkdir /home/ftpfiles/ftp/files
+sudo chown ftpuser:ftpusers /home/ftpuser/ftp/files
+
+
+# Check if all works
+ftp localhost
+
+# If want to user have access to other paths not in home, mount like this
+sudo mount --bind /var/webapps/site /home/ftpuser/ftp/site
