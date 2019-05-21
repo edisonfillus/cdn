@@ -1,0 +1,24 @@
+# Install nginx
+sudo apt-get install nginx
+
+# Create configuration file at /etc/nginx/sites-available/
+
+# Create symbolic link
+sudo ln -s /etc/nginx/sites-available/sipnl /etc/nginx/sites-enabled/
+
+# Create cache dir
+sudo mkdir -p /var/cache/nginx/example
+
+# Reload service
+sudo service nginx reload
+
+# Check queue of simultaneous connections
+ss -pln | grep :80
+
+# Check established connections
+ss -o state established '( dport = :80 or sport = :80 )'
+
+
+
+
+

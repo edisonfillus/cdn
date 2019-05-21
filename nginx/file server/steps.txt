@@ -1,0 +1,11 @@
+# Install nginx
+sudo apt-get install nginx
+
+# Create configuration file at /etc/nginx/sites-available/
+
+# Create symbolic link
+sudo ln -s /etc/nginx/sites-available/sipnl /etc/nginx/sites-enabled/
+
+# Check simultaneous connections
+ss -ln | grep :80
+
